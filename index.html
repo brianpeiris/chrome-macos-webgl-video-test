@@ -86,8 +86,12 @@
 
       function toggleFullscreen() {
         const fullscreenElement = document.webkitFullscreenElement || document.fullscreenElement;
-        const exitFullscreen = document.webkitExitFullscreen.bind(document) || document.exitFullscreen.bind(document);
-        const requestFullscreen = document.body.webkitRequestFullscreen.bind(document.body) || document.body.requestFullscreen.bind(document.body);
+        const exitFullscreen =
+          (document.webkitExitFullscreen && document.webkitExitFullscreen.bind(document)) ||
+          document.exitFullscreen.bind(document);
+        const requestFullscreen =
+          (document.body.webkitRequestFullscreen && document.body.webkitRequestFullscreen.bind(document.body)) ||
+          document.body.requestFullscreen.bind(document.body);
         fullscreenElement ? exitFullscreen() : requestFullscreen();
       }
     </script>
