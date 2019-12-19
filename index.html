@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" />
+    <script type="module" src="model-viewer-0.7.2.js"></script>
+    <style>
+      html,
+      body {
+        margin: 0;
+        background: white;
+        font-family: sans-serif;
+      }
+      body {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        height: 100vh;
+        text-align: center;
+      }
+      model-viewer {
+        width: 100%;
+        border: 4px solid lightgrey;
+        box-sizing: border-box;
+        flex: 1;
+      }
+      model-viewer.narrow {
+        width: 20%;
+      }
+      video {
+        width: 200px;
+      }
+      #controls {
+        margin: 0.5em;
+      }
+      button {
+        margin: 0 1em;
+      }
+    </style>
+  </head>
+  <body>
+    <div>
+      <video id="video" src="big_buck_bunny.mp4" loop autoplay muted controls></video>
+      <div>Current time: <span id="time"></span></div>
+      <div>Dropped frames: <span id="dropped"></span></div>
+    </div>
+
+    <div id="controls">
+      <button onclick="model.classList.toggle('narrow')">Toggle Width</button>
+      <button onclick="toggleRotation()">Toggle Rotation</button>
+      <button onclick="toggleCamera()">Toggle Camera</button>
+      <button onclick="toggleFullscreen()">Toggle Fullscreen</button>
+    </div>
+
+    <model-viewer id="model" src="river.glb" auto-rotate camera-orbit="0deg 75deg 20%" exposure="0.2"></model-viewer>
+
+    <script>
+      function updateStats() {
+        time.textContent = video.currentTime.toFixed(2);
+        dropped.textContent =
+          video.webkitDroppedFrameCount ||
+          (video.getVideoPlaybackQuality && video.getVideoPlaybackQuality().droppedVideoFrames);
+        requestAnimationFrame(updateStats);
+      }
+      requestAnimationFrame(updateStats);
+
+      let rotating = true;
+      function toggleRotation() {
+        if (rotating) {
+          model.removeAttribute("auto-rotate");
+        } else {
+          model.setAttribute("auto-rotate", "");
+        }
+        rotating = !rotating;
+      }
+
+      let far = false;
+      function toggleCamera() {
+        if (far) {
+          model.setAttribute("camera-orbit", "0deg 75deb 20%");
+        } else {
+          model.setAttribute("camera-orbit", "0deg 75deg 500%");
+        }
+        far = !far;
+      }
+
+      function toggleFullscreen() {
+        const fullscreenElement = document.webkitFullscreenElement || document.fullscreenElement;
+        const exitFullscreen = document.webkitExitFullscreen.bind(document) || document.exitFullscreen.bind(document);
+        const requestFullscreen = document.body.webkitRequestFullscreen.bind(document.body) || document.body.requestFullscreen.bind(document.body);
+        fullscreenElement ? exitFullscreen() : requestFullscreen();
+      }
+    </script>
+  </body>
+</html>
